@@ -29,7 +29,15 @@
         <item name="android:textColor">#ff0099cc</item>
     </style>
 		
-		
+	<style name="WizardItemSmall">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">?android:attr/listPreferredItemPaddingLeft</item>
+        <item name="android:paddingRight">?android:attr/listPreferredItemPaddingLeft</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#ff0099cc</item>
+    </style>
+    	
 	<style name="TextAppearanceFinish" parent="android:TextAppearance.Holo.Medium">
         <item name="android:textColor">#fff</item>
     </style>

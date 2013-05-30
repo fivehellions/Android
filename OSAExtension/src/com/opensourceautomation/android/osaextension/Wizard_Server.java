@@ -23,9 +23,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
-import com.opensourceautomation.android.osaextension.R;
 import com.opensourceautomation.android.osaextension.utilities.Devicelog;
 import com.opensourceautomation.android.osaextension.utilities.RestClient;
 import com.opensourceautomation.android.osaextension.utilities.RestClient.RequestMethod;
@@ -38,6 +38,9 @@ public final class Wizard_Server extends Fragment {
 	private static Devicelog mydevicelog;
 
 	private String serveraddress;
+	private String serverRestPort;
+	private String serverHttpPort;
+	
 
 	private TextView txtPageTitle;
 	private TextView txtEntryDescription1;   
@@ -47,6 +50,11 @@ public final class Wizard_Server extends Fragment {
 	private ProgressBar progress1; 
 	private Button button1;
 
+	private TextView txtChangePorts;
+	private TableLayout tablePorts;
+	private EditText txtEntryRestPort;
+	private EditText txtEntryHttpPort;
+	
 	public static Wizard_Server newInstance(Context parentcontext) {
 
 		myContext=parentcontext;
@@ -77,7 +85,9 @@ public final class Wizard_Server extends Fragment {
 		
 		SharedPreferences mypreferences = PreferenceManager.getDefaultSharedPreferences(myContext);
 		serveraddress=mypreferences.getString("serveraddress","");
-
+		serverRestPort=mypreferences.getString("serverRestPort", "8732");
+    	serverHttpPort=mypreferences.getString("serverHttpPort", "8081");
+    	
 		txtPageTitle = (TextView)v.findViewById(R.id.txtPageTitle);
 		txtPageTitle.setText(R.string.txt_osaserver);
 
@@ -88,12 +98,20 @@ public final class Wizard_Server extends Fragment {
 		progress1 = (ProgressBar)v.findViewById(R.id.progress1);
 		button1 = (Button)v.findViewById(R.id.button1);
 
+		txtChangePorts = (TextView)v.findViewById(R.id.txtChangePorts);
+		tablePorts = (TableLayout)v.findViewById(R.id.tablePorts);
+		txtEntryRestPort = (EditText)v.findViewById(R.id.txtEntryRestPort);
+		txtEntryHttpPort = (EditText)v.findViewById(R.id.txtEntryHttpPort);
+		
 		txtEntryDescription1.setVisibility(View.VISIBLE);
 		txtEntry1.setVisibility(View.VISIBLE);
 		txtProgress1.setVisibility(View.GONE);
 		progress1.setVisibility(View.GONE);
 		button1.setVisibility(View.VISIBLE);
 
+		txtChangePorts.setVisibility(View.VISIBLE);
+		tablePorts.setVisibility(View.GONE);
+		
 		button1.setText(R.string.txt_testconnection);
 
 		button1.setOnClickListener(new View.OnClickListener() {
@@ -126,17 +144,29 @@ public final class Wizard_Server extends Fragment {
 				new sendRequest().execute(client);
 			}
 		});
-
+		
 		txtEntryDescription1.setText(R.string.txt_serveraddress);
 		txtEntry1.setText(serveraddress);
-
-		txtEntry1.addTextChangedListener(textwatcher);
-
+		txtEntryRestPort.setText(serverRestPort);
+		txtEntryHttpPort.setText(serverHttpPort);
+		
+		txtEntry1.addTextChangedListener(twserveraddress);
+		txtEntryRestPort.addTextChangedListener(twrestport);
+		txtEntryHttpPort.addTextChangedListener(twhttpport);
+		
 		if (serveraddress.equals("")){
 			button1.setEnabled(false);
 		}
 
+		txtChangePorts.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				txtChangePorts.setVisibility(View.GONE);
+				tablePorts.setVisibility(View.VISIBLE);
+			}
+		});
 
+		
 		return v;
 	}
 
@@ -145,28 +175,19 @@ public final class Wizard_Server extends Fragment {
 		super.onSaveInstanceState(outState);
 	}
 
-
-
-	TextWatcher textwatcher = new TextWatcher() {
-
+	TextWatcher twserveraddress = new TextWatcher() {
 		@Override
 		public void afterTextChanged(Editable s) {
 			// TODO Auto-generated method stub
-
 		}
-
 		@Override
 		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 			// TODO Auto-generated method stub
-
 		}
-
 		@Override
 		public void onTextChanged(CharSequence s, int start, int before, int count) {
-
 			if (s.length()>0){
 				button1.setEnabled(true);
-				
 				serveraddress=s.toString();
 
 				final SharedPreferences prefFile = PreferenceManager.getDefaultSharedPreferences(myContext);   
@@ -178,11 +199,51 @@ public final class Wizard_Server extends Fragment {
 			{
 				button1.setEnabled(false);
 			}
-
 		} 
-
 	};
 
+	TextWatcher twrestport = new TextWatcher() {
+		@Override
+		public void afterTextChanged(Editable s) {
+			// TODO Auto-generated method stub
+		}
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			// TODO Auto-generated method stub
+		}
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+			serverRestPort=s.toString();
+
+			final SharedPreferences prefFile = PreferenceManager.getDefaultSharedPreferences(myContext);   
+			final SharedPreferences.Editor editor = prefFile.edit();  
+			editor.putString("serverRestPort", serverRestPort);               
+			editor.commit();  
+		} 
+	};
+
+	TextWatcher twhttpport = new TextWatcher() {
+		@Override
+		public void afterTextChanged(Editable s) {
+			// TODO Auto-generated method stub
+		}
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			// TODO Auto-generated method stub
+		}
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
+			serverHttpPort=s.toString();
+
+			final SharedPreferences prefFile = PreferenceManager.getDefaultSharedPreferences(myContext);   
+			final SharedPreferences.Editor editor = prefFile.edit();  
+			editor.putString("serverHttpPort", serverHttpPort);               
+			editor.commit();  
+
+		} 
+	};
+	
+	
 	private void parseresults(String result){
 		
 		final SharedPreferences prefFile = PreferenceManager.getDefaultSharedPreferences(myContext);   

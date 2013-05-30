@@ -30,6 +30,9 @@
     
     <string name="txt_osaserver">OSA Server</string>
     <string name="txt_serveraddress">Server Address</string>
+    <string name="txt_changeports">+change default ports</string>
+    <string name="txt_restport">Rest Port</string>
+    <string name="txt_httpport">HTTP Port</string>
     <string name="txt_testconnection">Test Connection</string>
     <string name="txt_testingconnection">Testing Connection</string>
     <string name="txt_connectionerror">Error Connecting to OSA server</string>
